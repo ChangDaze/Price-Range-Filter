@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Price Range Filter</title>
+    <link
+      rel="stylesheet"
+      href="https://code.jquery.com/ui/1.13.0/themes/start/jquery-ui.css"
+    />
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"
+      integrity="sha256-hlKLmzaRlE8SCJC1Kw8zoUbU8BxA+8kR3gseuKfMjxA="
+      crossorigin="anonymous"
+    ></script>
+
+    <style>
+      #range {
+        color: red;
+        font-weight: bold;
+      }
+      table {
+        border-collapse: collapse;
+        /* 不會變雙重邊 */
+      }
+      table,
+      th,
+      td {
+        border: 1px solid black;
+        padding: 10px;
+      }
+      th,
+      tr:nth-child(odd) {
+        /* 這是th本身和tr的child */
+        background: #e6eeff;
+      }
+      /* tr:nth-child(even){
+          background: #e6f2ff;
+      } */
+      .ui-slider {
+        width: 800px;
+        padding-left: 10px;
+        background: #ccddff;
+      }
+    </style>
+
+    <script>
+      //https://www.runoob.com/jqueryui/example-slider.html  slider的例子
+      var details = {
+        //要放在document外面才吃的到document外的function
+        "Printer Cable": 4,
+        "Stylus Pen": 10,
+        "Computer Speaker": 14,
+        "USB Microphone": 19,
+        "Memory Card": 29,
+        "USB Hub": 36,
+        "Security Key": 40,
+      };
+
+      $(document).ready(function () {
+        $("#slider").slider({
+          max: 50,
+          range: true,
+          values: [15, 30],
+          change: function (event, ui) {
+            //更改slider會觸發表格改變
+            getDetails(ui.values[0], ui.values[1]);
+          },
+        }); //要放在document裡面，才能顯現的樣子??因為html初始都寫好才加?(因為放在header)
+        var current = $("#slider").slider("option", "values"); //values要用雙引號括起來
+        //http://yhhuang1966.blogspot.com/2019/03/jquery-ui-slider.html  option的東東
+        getDetails(current[0], current[1]); //直接取物件?
+      });
+
+      function getDetails(minimum, maximum) {
+        $("#range").text("$" + minimum + " - $" + maximum); //價錢標示
+        var result =
+          "<table><tr><th>Product Name</th><th>Price (in $)</th></tr>";
+        for (var item in details) {
+          //只要在max和min之間就加入表格
+          if (details[item] >= minimum && details[item] <= maximum) {
+            result +=
+              "<tr><td>" + item + "</td><td>" + details[item] + "</td></tr>";
+          }
+        }
+        result += "</table>"; //補結尾
+        $("#output").html(result);
+      }
+    </script>
+  </head>
+  <body>
+    <b>Price Range:</b><span id="range"></span>
+    <div id="slider"></div>
+    <div id="output"></div>
+  </body>
+</html>
